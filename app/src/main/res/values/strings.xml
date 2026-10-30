@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">EasyCast</string>
+    <style name="AppTheme" parent="android:style/Theme.Material.Light.NoActionBar">
+        <item name="android:fontFamily">sans</item>
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowBackground">#FFF6EC</item>
+        <item name="android:colorAccent">#E8714A</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
+    <style name="HelpDialog" parent="android:style/Theme.Material.Light.Dialog.Alert">
+        <item name="android:colorAccent">#E8714A</item>
+    </style>
+</resources>

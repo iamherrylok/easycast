@@ -1,78 +1,102 @@
-# EasyCast
+<div align="center">
 
-面向支持安装 APK 的 **Android TV 电视和电视盒子** 的通用视频投屏接收端。最低支持 Android 8.0（API 26），无 Google Play 服务依赖。参考常见投屏软件的使用流程，独立实现。
+<img src="app/src/main/res/drawable-xhdpi/banner.png" alt="EasyCast" width="320">
 
-电视应用列表、启动图块、App 首页和手机搜索到的设备名统一为 **EasyCast**。界面采用奶油色暖色调；Logo 是一座带电视屏幕的小房子，电视启动图块为左侧 Logo、右侧 EasyCast 文字的单行布局，不含副标题。设备名不绑定品牌或电视型号。使用同一安装包覆盖升级会保留已有设备 UUID。
+**让 Android 电视变成投屏接收器，一家人一起看大屏。**
 
-“通用”指不依赖特定电视品牌的实现，并不表示已验证所有电视：其他 Android TV 设备仍需实测；非安卓电视系统不能直接安装此 APK。
+[![Release](https://img.shields.io/github/v/release/iamherrylok/easycast?color=E8714A)](https://github.com/iamherrylok/easycast/releases/latest)
+![Android 8.0+](https://img.shields.io/badge/Android%20TV-8.0%2B-5CAA6C)
+[![License: MIT](https://img.shields.io/badge/License-MIT-3E2C23)](LICENSE)
 
-## 第一版范围
+[**⬇ 下载最新版 APK**](https://github.com/iamherrylok/easycast/releases/latest)
 
-- UPnP AV / DLNA 风格的 MediaRenderer：SSDP 发现、设备描述、SOAP 播放控制、GENA 状态回传。
-- Media3 播放器：HTTP(S) MP4、HLS、DASH 等；实际格式和清晰度取决于电视解码能力及视频源。
-- 播放、暂停、停止、点播跳转、App 内音量和静音；直播是否能跳转取决于播放源。
-- 电视遥控器操作；显示网络与错误状态；网络地址变化后重建接收服务。
-- 稳定设备 UUID，避免每次启动都成为一个新设备。
+</div>
 
-**当前是前台测试版本：请先在电视打开 App，投屏期间保持 App 在前台。退出、切换其他 App 或电视待机后服务停止。** 不包含 AirPlay 屏幕镜像、华为 Cast、后台常驻、开机自启或付费内容解密。不是经过 DLNA 认证的商用产品，也未宣称兼容全部投屏 App。
+![EasyCast 电视首页](docs/screenshot.png)
 
-**咪咕 iPhone 客户端发现与播放的兼容性待实机验证。** 此前版本已在一台 Android 10 / API 29 电视上安装并启动，确认接收首页正常显示；电脑经局域网 SSDP 成功发现接收端，真实电视的 `GetTransportInfo` 返回 `NO_MEDIA_PRESENT / OK`。这不代表咪咕兼容性或视频解码已经验证。
+## 这是什么
 
-## 安装与使用
+EasyCast 是装在 **Android TV 电视或电视盒子**上的投屏接收端。装好后，在手机视频 App 的播放页点一下 **「TV」**，选择 **EasyCast**，视频就会在电视上播放。
 
-安装包：在 GitHub [Releases](https://github.com/iamherrylok/easycast/releases) 下载 `easycast-1.0.0.apk`，或本地构建后在 `dist/` 中获取。
+## 亮点
 
-1. 通过电视允许的 APK 安装方式安装。使用 U 盘时，需要电视上的文件管理器能够打开 APK，并允许该安装来源；具体菜单取决于电视固件。也可在已授权的 ADB 连接上执行：
+- 🏠 **免费、无广告、不用注册**：也不收集任何使用数据。
+- 📱 **手机点一下就能投**：支持手机视频 App 里常见的「TV」投屏（DLNA）。
+- 🎬 **常见格式都能播**：MP4、HLS、DASH，点播和直播均可。
+- 🎮 **遥控器就能用**：大字界面，播放时按返回键即可停止。
+- 📺 **不挑电视品牌**：Android 8.0 及以上的电视和盒子都能装，不需要 Google 服务。
 
-   ```sh
-   adb devices
-   adb -s YOUR_TV_SERIAL install -r easycast-1.0.0.apk
-   ```
+## 三步开始
 
-2. 在电视应用列表打开 **EasyCast**，确认显示“接收服务已启动”。
-3. 手机与电视连接同一家庭局域网。电视可以使用网线，前提是与手机所在 Wi-Fi 互通。
-4. iPhone 设置 → 隐私与安全性 → 本地网络，允许咪咕视频访问。
-5. 在咪咕的视频播放页点击 **TV**，查找 **EasyCast**。这不是 iPhone 控制中心的“屏幕镜像”。
-6. 先测普通点播视频，再测你常看的直播。记录“搜不到 / 找到但连接失败 / 连接后播放失败”和电视显示的错误名称。
+1. **安装**：在 [Releases](https://github.com/iamherrylok/easycast/releases/latest) 下载 `easycast-1.0.0.apk`，装到电视上（安装方法见下方）。
+2. **打开**：在电视上打开 **EasyCast**，看到“接收服务已启动，等待手机连接”即可。
+3. **投屏**：手机连上和电视同一个 Wi-Fi，在视频 App 播放页点 **「TV」**，选择 **EasyCast**。
 
-播放时按遥控器返回键停止视频并返回接收首页；再按返回键退出。首页“重启接收服务”会清除现有投屏订阅，手机可能需要重新选择设备。
+<details>
+<summary><b>怎么把 APK 装到电视上？</b></summary>
 
-## 本地构建
+- **U 盘**：把 APK 拷进 U 盘插到电视上，用电视自带的文件管理器打开安装。第一次安装时需要在设置里允许“未知来源”应用，具体菜单因电视品牌而异。
+- **手机推送**：如果电视装了当贝市场、沙发管家等应用，可以用它们配套的手机助手，把 APK 推送到电视上安装。
+- **ADB**（适合有电脑的用户）：
 
-需要 JDK 17 或 21、Android SDK Platform 35、Build Tools 34.0.0。项目使用 Gradle 8.9 / AGP 8.7.3，Media3 1.5.1 固定版本。
+  ```sh
+  adb connect 电视IP
+  adb install -r easycast-1.0.0.apk
+  ```
 
-```sh
-export ANDROID_HOME=/path/to/android-sdk
-./gradlew :app:testDebugUnitTest :app:lintDebug :app:assembleRelease
-mkdir -p dist
-cp app/build/outputs/apk/release/app-release.apk dist/easycast-1.0.0.apk
-```
+</details>
 
-也可用 Android Studio 打开项目，设置本地 SDK 后编译。开发工具和缓存不进入 Git。
+## 常见问题
 
-正式版签名读取 `signing/keystore.properties`（字段：`storeFile`、`storePassword`、`keyAlias`、`keyPassword`），该目录不进入 Git。缺少此文件时 release 构建不签名。后续版本必须使用同一签名才能覆盖安装；此前安装过 debug 签名测试版的电视需先卸载再装正式版。
+<details>
+<summary><b>手机搜不到 EasyCast？</b></summary>
 
-当前工作目录已备有本地构建工具时，可直接运行 `bash scripts/build-local.sh`。需要代理时，将 Gradle 的 `-Dhttps.proxyHost=...` 等参数传给此脚本；项目不保存代理配置。
+- 确认手机和电视连的是**同一个家庭网络**，不要用访客 Wi-Fi；有的路由器开了“AP 隔离”，也会让设备互相看不见。电视用网线也可以，只要和手机的 Wi-Fi 在同一个网络里。
+- **iPhone**：打开 设置 → 隐私与安全性 → 本地网络，允许你的视频 App 访问。
+- 确认电视上的 EasyCast 正开着，并显示“接收服务已启动”。
+- 还是不行，就在电视上点“重启接收服务”，然后在手机上重新搜索。
 
-## 测试与边界
+</details>
 
-`UpnpTest` 覆盖点播控制、URL/元数据转义、直播跳转限制、参数错误、服务描述一致性、事件内容、发现请求以及回调地址校验。
+<details>
+<summary><b>为什么投屏时 EasyCast 要一直开着？</b></summary>
 
-`RendererServerTest` 启动真实的本地 HTTP 服务，模拟控制端拉取描述、加载并播放视频、查询状态及订阅状态变化；播放器使用替身，不代表解码已通过。
+当前版本只在 App 打开时接收投屏。退出、切换到其他 App 或电视待机后，接收服务会停止，再次打开就会恢复。
 
-真机验收仍需检查：iPhone 咪咕能否发现、视频能否播放、音画同步、直播、网络断开恢复、退出重进、遥控器操作与播放界面。网络隔离、咪咕专用协议/设备筛选、DRM、需特定请求头或鉴权的视频地址，均可能导致兼容性失败。
+</details>
 
-服务仅在前台监听选定的局域网 IPv4 地址，使用 UDP 1900 和动态 HTTP 端口。未引入账户、广告或遥测；播放地址不写入日志。与常见 DLNA 接收端一样，同一网络里的设备在 App 打开时可以发送播放控制。
+<details>
+<summary><b>能把手机整个屏幕投上去吗？</b></summary>
 
-## 代码结构
+暂时不行。EasyCast 接收的是视频 App 里的「TV」投屏，不支持 iPhone 控制中心的“屏幕镜像”（AirPlay），也不支持华为 Cast 等整屏镜像。
 
-- `core/Upnp.java`：与 Android 无关的服务描述、控制协议和状态事件。
-- `core/RendererServer.java`：局域网发现、HTTP 控制与事件订阅。
-- `PlayerAdapter.java`：把协议操作调度到 Media3 的主线程。
-- `MainActivity.java`：电视界面、遥控器与前台生命周期、网络变化处理。
+</details>
 
-## 参考
+<details>
+<summary><b>能连上，但视频播放失败？</b></summary>
 
-- [UPnP AV 标准](https://openconnectivity.org/developer/specifications/upnp-resources/upnp/mediaserver4-and-mediarenderer3/)
-- [Android TV 应用要求](https://developer.android.com/training/tv/get-started/create)
-- [Media3 播放器](https://developer.android.com/media/media3/exoplayer/hello-world)
+电视上会显示失败原因。常见情况：视频有版权保护（DRM）、需要会员鉴权，或者电视解码不了这种格式。可以先换一个普通视频试试。欢迎带上**电视型号、视频 App 名称和电视上显示的错误**提交 [Issue](https://github.com/iamherrylok/easycast/issues)。
+
+</details>
+
+<details>
+<summary><b>从旧的测试版升级时提示安装失败？</b></summary>
+
+早期测试版使用的签名和正式版不同，需要先卸载旧版再安装。卸载后手机上可能要重新选一次 EasyCast。
+
+</details>
+
+## 已知限制
+
+- 只在 App 打开时接收投屏，不支持后台常驻和开机自启。
+- 不支持整屏镜像（AirPlay 镜像、华为 Cast 等）。
+- 兼容性因电视和视频 App 而异，目前还没有逐一验证所有组合。
+- 非 Android 系统的电视无法安装。
+
+## 开发者
+
+想自己编译、修改或了解实现细节，请看 [开发文档](docs/DEVELOPMENT.md)。欢迎提交 Issue 和 Pull Request。
+
+## 许可证
+
+[MIT](LICENSE) © 2026 iamherrylok
